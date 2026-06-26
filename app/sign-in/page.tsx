@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignIn() {
-  const { handleSubmit, control, formState } = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
@@ -29,7 +29,7 @@ export default function SignIn() {
         password: formData.password,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           router.push("/")
         }
       }

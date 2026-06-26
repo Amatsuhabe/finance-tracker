@@ -8,6 +8,7 @@ import { SignUpFormData, signUpSchema } from "@/lib/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignUp() {
@@ -21,20 +22,23 @@ export default function SignUp() {
       confirmPassword: ""
     }
   })
-  console.log(formState)
+
+  const router = useRouter()
+
   const onSumbmit = async (formData: SignUpFormData) => {
     const data = await authClient.signUp.email({
       email: formData.email,
       password: formData.password,
       name: formData.firstName,
       lastName: formData.lastName
-    }).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log(err)
-    })
+    },
+      {
+        onSuccess: () => {
+          router.push("/")
+        }
+      })
 
-    console.log({data})
+    console.log({ data })
   }
 
   return (
