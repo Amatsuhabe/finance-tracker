@@ -77,21 +77,23 @@ model Verification {
   @@map("verification")
 }
 
+enum TransactionType {
+  income
+  expense
+  both
+}
+
 model Category {
   id           String        @id @default(cuid())
   name         String
   icon         String
   color        String
+  type       TransactionType
   userId       String
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@map("category")
-}
-
-enum TransactionType {
-  income
-  expense
 }
 
 model Transaction {

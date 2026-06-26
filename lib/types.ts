@@ -1,3 +1,5 @@
+type TransactionType = "income" | "expense" | "both"
+
 export interface Transaction {
   title: string;
   amount: number;
@@ -5,11 +7,12 @@ export interface Transaction {
   category: string;
   icon: string;
   color: string;
-  type: "income" | "expense";
+  type: TransactionType;
 }
 
 export interface Category {
   name: string,
   color: string,
-  icon: string
+  icon: string,
+  type: TransactionType
 }
