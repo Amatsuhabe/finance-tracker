@@ -37,8 +37,6 @@ export default function SignUp() {
           router.push("/")
         }
       })
-
-    console.log({ data })
   }
 
   return (

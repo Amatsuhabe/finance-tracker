@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   })
 
   const { pathname } = request.nextUrl
-console.log(session)
+
   if (!session && !(pathname === "/sign-in" || pathname === "/sign-up")) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }

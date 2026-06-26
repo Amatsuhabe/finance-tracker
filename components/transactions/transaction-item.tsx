@@ -10,7 +10,7 @@ interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function TransactionItem({ transaction, className, ...props }: TransactionItemProps) {
   return (
-    <Button key={transaction.id} variant={"ghost"} className="h-auto w-full active:not-aria-[haspopup]:translate-y-0 border-0" asChild>
+    <Button variant={"ghost"} className="h-auto w-full active:not-aria-[haspopup]:translate-y-0 border-0" asChild>
       <div className={cn("flex items-center gap-3 p-2 rounded-md", className)} {...props}>
         <div
           className="flex justify-center items-center size-9 rounded-lg"

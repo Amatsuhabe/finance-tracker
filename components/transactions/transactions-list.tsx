@@ -10,7 +10,7 @@ export default function TransactionsList({ transactions, amount, ...props }: Tra
   return (
     <>
       {transactions.slice(0, amount).map((transaction) => (
-        <TransactionItem key={transaction.id} transaction={transaction} {...props} />
+        <TransactionItem key={transaction.date} transaction={transaction} {...props} />
       ))}
     </>
   )

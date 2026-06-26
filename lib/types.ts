@@ -1,5 +1,4 @@
 export interface Transaction {
-  id: string;
   title: string;
   amount: number;
   date: string;
@@ -7,4 +6,10 @@ export interface Transaction {
   icon: string;
   color: string;
   type: "income" | "expense";
+}
+
+export interface Category {
+  name: string,
+  color: string,
+  icon: string
 }
