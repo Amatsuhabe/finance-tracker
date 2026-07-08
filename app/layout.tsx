@@ -7,6 +7,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import AppSidebar from "@/components/app-sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <TooltipProvider>
           {children}
+          <Toaster position="top-right"></Toaster>
         </TooltipProvider>
       </body>
     </html>

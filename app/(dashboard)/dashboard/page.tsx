@@ -1,9 +1,10 @@
 import WeeklyOverviewChart from "@/components/dashboard/weekly-overview-chart";
+import AddTransactionModal from "@/components/shared/add-transaction-modal";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-import { ArrowRight, Plus, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
 
 const mockDashboardData = {
@@ -65,10 +66,7 @@ export default function Dashboard() {
           <div className="text-xl font-semibold">Dashboard</div>
           <div className="text-muted-foreground text-sm">{month} {year}</div>
         </div>
-        <Button>
-          <Plus></Plus>
-          <span>Add Transaction</span>
-        </Button>
+        <AddTransactionModal />
       </div>
 
       <div className="flex gap-4">

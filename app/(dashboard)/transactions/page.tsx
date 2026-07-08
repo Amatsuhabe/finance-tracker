@@ -1,7 +1,6 @@
+import AddTransactionModal from "@/components/shared/add-transaction-modal";
 import TransactionsList from "@/components/transactions/transactions-list";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent,  } from "@/components/ui/card";
-import { Plus, } from "lucide-react";
+import { Card, CardContent, } from "@/components/ui/card";
 
 const mockTransactions = [
   {
@@ -43,10 +42,7 @@ export default function Transactions() {
           <div className="text-xl font-semibold">Transactions</div>
           <div className="text-muted-foreground text-sm">{mockTransactions.length} transactions</div>
         </div>
-        <Button>
-          <Plus></Plus>
-          <span>Add Transaction</span>
-        </Button>
+        <AddTransactionModal />
       </div>
 
       <Card className="w-full p-0">

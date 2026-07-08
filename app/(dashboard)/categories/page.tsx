@@ -1,14 +1,10 @@
-import CategoryItem from "@/components/category/category-item";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+'use client'
 
-export default async function Categories() {
-  const session = await auth.api.getSession({ headers: await headers() })
+import CategoryItem from "@/components/categories/category-item";
+import { useCategoriesStore } from "@/components/providers/categories-provider";
 
-  const categories = await prisma.category.findMany({
-    where: { userId: session?.user.id }
-  })
+export default function Categories() {
+  const categories = useCategoriesStore((state) => state.categories)
 
   return (
     <div className="flex flex-col gap-6">
@@ -25,13 +21,9 @@ export default async function Categories() {
         </div>
 
         <div className="grid grid-cols-3 justify-start gap-3">
-          {categories.filter(category => category.type === "income" || category.type === "both").map(category => {
-            const { id, userId, ...rest } = category
-
-            return (
-              <CategoryItem key={id} {...rest}></CategoryItem>
-            )
-          })}
+          {categories.filter(category => category.type === "income" || category.type === "both").map(category => (
+            <CategoryItem key={category.name} {...category}></CategoryItem>
+          ))}
         </div>
       </div>
 
@@ -41,13 +33,9 @@ export default async function Categories() {
         </div>
 
         <div className="grid grid-cols-3 justify-start gap-3">
-          {categories.filter(category => category.type === "expense" || category.type === "both").map(category => {
-            const { id, userId, ...rest } = category
-
-            return (
-              <CategoryItem key={id} {...rest}></CategoryItem>
-            )
-          })}
+          {categories.filter(category => category.type === "expense" || category.type === "both").map(category => (
+            <CategoryItem key={category.name} {...category}></CategoryItem>
+          ))}
         </div>
       </div>
     </div>

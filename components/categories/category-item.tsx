@@ -1,11 +1,10 @@
 import { cn, hexToRgba } from "@/lib/utils";
-import { Button } from "../ui/button";
 import { Category } from "@/lib/types";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 
-interface CategoryIconProps extends Category, Omit<React.HTMLAttributes<HTMLDivElement>, "color"> { }
+interface CategoryIconProps extends Category, Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "id"> { }
 
 export default function CategoryItem({ name, color, icon, type, className, ...props }: CategoryIconProps) {
   return (

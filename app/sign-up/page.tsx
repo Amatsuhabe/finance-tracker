@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignUp() {
-  const { handleSubmit, control, reset, formState } = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       firstName: "",
@@ -26,12 +26,13 @@ export default function SignUp() {
   const router = useRouter()
 
   const onSumbmit = async (formData: SignUpFormData) => {
-    const data = await authClient.signUp.email({
-      email: formData.email,
-      password: formData.password,
-      name: formData.firstName,
-      lastName: formData.lastName
-    },
+    await authClient.signUp.email(
+      {
+        email: formData.email,
+        password: formData.password,
+        name: formData.firstName,
+        lastName: formData.lastName
+      },
       {
         onSuccess: () => {
           router.push("/")

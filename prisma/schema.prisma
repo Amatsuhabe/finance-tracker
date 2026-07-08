@@ -84,28 +84,28 @@ enum TransactionType {
 }
 
 model Category {
-  id           String        @id @default(cuid())
+  id           String          @id @default(cuid())
   name         String
   icon         String
   color        String
-  type       TransactionType
+  type         TransactionType
   userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@map("category")
 }
 
 model Transaction {
-  id         String          @id @default(cuid())
-  title      String
-  amount     Float
-  type       TransactionType
-  categoryId String
-  category   Category        @relation(fields: [categoryId], references: [id])
-  createdAt  DateTime        @default(now())
-  userId     String
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String          @id @default(cuid())
+  amount      Float
+  type        TransactionType
+  categoryId  String
+  description String?
+  category    Category        @relation(fields: [categoryId], references: [id])
+  date        DateTime        @default(now())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("transaction")
 }
