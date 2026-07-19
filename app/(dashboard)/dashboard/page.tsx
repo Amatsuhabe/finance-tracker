@@ -3,6 +3,8 @@ import AddTransactionModal from "@/components/shared/add-transaction-modal";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import getSession from "@/lib/auth/get-session";
+import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowRight, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
@@ -33,31 +35,20 @@ const mockDashboardData = {
   ]
 }
 
-const mockTransactions = [
-  {
-    id: "1",
-    title: "Salary",
-    amount: 5000,
-    date: "2023-06-01",
-    category: "Investments",
-    icon: "trending-up",
-    color: "#2dd4bf",
-    type: "income"
-  },
-  {
-    id: "2",
-    title: "Grocery Shopping",
-    amount: 200,
-    date: "2023-06-05",
-    category: "Food",
-    icon: "shopping-cart",
-    color: "#f87171",
-    type: "expense"
-  }
-];
-
-export default function Dashboard() {
+export default async function Dashboard() {
   const { month, year, netBalance, totalIncome, totalExpenses } = mockDashboardData;
+
+  const session = await getSession()
+
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      userId: session.user.id
+    },
+    include: {
+      category: true
+    },
+    take: 8,
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -130,6 +121,7 @@ export default function Dashboard() {
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">Your latest activity</CardDescription>
           </div>
+
           <Button variant="ghost" size="sm" asChild>
             <Link href="/transactions" >
               View all
@@ -137,8 +129,9 @@ export default function Dashboard() {
             </Link>
           </Button>
         </CardHeader>
-        <CardContent className="divide-y! divide-border!">
-          <TransactionsList transactions={mockTransactions} amount={8}></TransactionsList>
+
+        <CardContent>
+          <TransactionsList transactions={transactions} amount={8}></TransactionsList>
         </CardContent>
       </Card>
     </div>

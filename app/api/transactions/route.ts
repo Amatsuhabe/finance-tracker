@@ -28,3 +28,15 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ message: "Transaction added successfully" }, { status: 200 })
 }
+
+export async function GET(req: Request) {
+  const session = await getSession()
+
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      userId: session.user.id
+    },
+  })
+
+  return NextResponse.json(transactions, { status: 200 })
+}

@@ -8,9 +8,9 @@ import { useStore } from 'zustand'
 export const CategoriesStoreContext = createContext<ReturnType<typeof createCategoriesStore> | undefined>(undefined);
 
 export default function CategoriesStoreProvider({ children, initialCategories }: { children: React.ReactNode; initialCategories: Category[] }) {
-  const categoriesStore = createCategoriesStore();
-
-  categoriesStore.setState({ categories: initialCategories });
+  const categoriesStore = createCategoriesStore({
+    categories: initialCategories
+  });
 
   return (
     <CategoriesStoreContext.Provider value={categoriesStore}>
