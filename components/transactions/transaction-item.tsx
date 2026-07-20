@@ -1,8 +1,9 @@
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { cn, hexToRgba } from "@/lib/utils";
-import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Transaction } from '@/lib/types';
+import { Pencil } from 'lucide-react';
+import DeleteTransactionModal from './delete-transaction-modal';
+import TransactionItemContent from './transaction-item-content';
 
 interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   transaction: Transaction;
@@ -10,41 +11,17 @@ interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function TransactionItem({ transaction, className, ...props }: TransactionItemProps) {
   return (
-    <Button variant={"ghost"} className="h-auto w-full active:not-aria-[haspopup]:translate-y-0 border-0" asChild>
-      <div className={cn("flex items-center gap-3 p-2 rounded-none", className)} {...props}>
-        <div
-          className="flex justify-center items-center size-9 rounded-lg"
-          style={{
-            backgroundColor: hexToRgba(transaction.category.color, 0.2),
-            color: transaction.category.color
-          }}
-        >
-          <DynamicIcon size={20} name={transaction.category.icon as IconName} />
-        </div>
+    <Button variant={"ghost"} className="h-auto w-full active:not-aria-[haspopup]:translate-y-0 border-0 hover:bg-muted/40" asChild>
+      <div className={cn("flex items-center gap-3 px-4 py-3 rounded-none group", className)} {...props}>
+        <TransactionItemContent transaction={transaction} />
 
-        <div className="flex flex-col gap-0.5">
-          <div className="text-sm font-medium">
-            {transaction.description || transaction.category.name}
-          </div>
+        <div>
+          <div className='opacity-0 group-hover:opacity-100 duration-200'>
+            <Button variant="ghost" size="icon" className='text-muted-foreground hover:text-foreground duration-200' >
+              <Pencil />
+            </Button>
 
-          <div className="text-muted-foreground text-xs">
-            {
-              new Date(transaction.date).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric"
-              })
-            }
-          </div>
-        </div>
-
-        <div className="flex ml-auto gap-6">
-          <Badge variant={"secondary"}>
-            {transaction.category.name}
-          </Badge>
-
-          <div className={cn("text-sm font-medium min-w-24 text-right", transaction.type === "income" ? "text-income" : "text-expense")}>
-            {`${transaction.type === "income" ? "+" : "-"}$${Math.abs(transaction.amount).toFixed(2)}`}
+            <DeleteTransactionModal transaction={transaction} />
           </div>
         </div>
 

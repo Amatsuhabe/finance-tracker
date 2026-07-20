@@ -1,12 +1,11 @@
 import WeeklyOverviewChart from "@/components/dashboard/weekly-overview-chart";
-import AddTransactionModal from "@/components/shared/add-transaction-modal";
+import AddTransactionModal from "@/components/transactions/add-transaction-modal";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import getSession from "@/lib/auth/get-session";
-import { prisma } from "@/lib/prisma";
+import { getTransactions } from "@/lib/data/transactions";
 import { formatCurrency } from "@/lib/utils";
-import { ArrowRight, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, ReceiptText, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
 
 const mockDashboardData = {
@@ -38,17 +37,7 @@ const mockDashboardData = {
 export default async function Dashboard() {
   const { month, year, netBalance, totalIncome, totalExpenses } = mockDashboardData;
 
-  const session = await getSession()
-
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: session.user.id
-    },
-    include: {
-      category: true
-    },
-    take: 8,
-  });
+  const transactions = await getTransactions({ take: 8 })
 
   return (
     <div className="flex flex-col gap-6">
@@ -131,7 +120,19 @@ export default async function Dashboard() {
         </CardHeader>
 
         <CardContent>
-          <TransactionsList transactions={transactions} amount={8}></TransactionsList>
+          {
+            transactions.length > 0 ? (
+              <TransactionsList transactions={transactions} amount={8} />
+            ) : (
+              <div className="flex flex-col gap-3 items-center justify-center p-8">
+                <div className="rounded-full bg-muted p-3 text-muted-foreground">
+                  <ReceiptText />
+                </div>
+                <div className="font-medium">No transactions</div>
+                <div className="text-xs text-muted-foreground">No activity found for the selected period.</div>
+              </div>
+            )
+          }
         </CardContent>
       </Card>
     </div>

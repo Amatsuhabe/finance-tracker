@@ -1,20 +1,11 @@
-import AddTransactionModal from "@/components/shared/add-transaction-modal";
+import AddTransactionModal from "@/components/transactions/add-transaction-modal";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Card, CardContent, } from "@/components/ui/card";
-import getSession from "@/lib/auth/get-session";
-import { prisma } from "@/lib/prisma";
+import { getTransactions } from "@/lib/data/transactions";
+import { ReceiptText } from "lucide-react";
 
 export default async function Transactions() {
-  const session = await getSession()
-
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: session.user.id
-    },
-    include: {
-      category: true
-    }
-  });
+  const transactions = await getTransactions()
 
   return (
     <div className="flex flex-col gap-6">
@@ -28,7 +19,18 @@ export default async function Transactions() {
 
       <Card className="w-full p-0">
         <CardContent className="p-0">
-            <TransactionsList className="rounded-none" transactions={transactions} amount={8}></TransactionsList>
+          {
+            transactions.length > 0 ? (
+              <TransactionsList transactions={transactions} />
+            ) : (
+              <div className="flex flex-col gap-3 items-center justify-center p-8">
+                <div className="rounded-full bg-muted p-3 text-muted-foreground">
+                  <ReceiptText />
+                </div>
+                <div className="font-medium">No transactions found</div>
+              </div>
+            )
+          }
         </CardContent>
       </Card>
     </div>

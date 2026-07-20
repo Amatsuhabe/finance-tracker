@@ -1,4 +1,5 @@
 import getSession from "@/lib/auth/get-session";
+import { getTransactions } from "@/lib/data/transactions";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -30,13 +31,13 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const session = await getSession()
+  const { searchParams } = new URL(req.url)
 
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: session.user.id
-    },
-  })
+  const take = Number(searchParams.get('take'))
+  const skip = Number(searchParams.get('skip'))
+
+  const transactions = await getTransactions({ take, skip })
 
   return NextResponse.json(transactions, { status: 200 })
 }
+

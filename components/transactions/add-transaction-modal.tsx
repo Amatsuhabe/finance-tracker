@@ -29,6 +29,7 @@ import { useEffect, useState } from "react"
 import { useCategoriesStore } from "../providers/categories-provider"
 import { DynamicIcon, IconName } from "lucide-react/dynamic"
 import { toast } from "sonner"
+import { mutate } from "swr"
 
 export default function AddTransactionModal() {
   const [isOpen, setIsOpen] = useState(false)
@@ -63,28 +64,37 @@ export default function AddTransactionModal() {
   }, [filteredCategories, categoryId, setValue])
 
   const onSubmit = async (data: TransactionData) => {
-    toast.promise(
-      async () => new Promise(async (resolve, reject) => {
-        const res = await fetch("/api/transactions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        })
+    const promise = fetch("/api/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to add transaction")
+        }
 
-        if (!res.ok) reject("Failed to add transaction")
+        return res
+      })
 
-        resolve(res)
-        setIsOpen(false)
-        reset()
-      }),
-      {
-        loading: "Adding transaction...",
-        success: "Transaction added successfully",
-        error: (error) => error
-      }
-    )
+    toast.promise(promise, {
+      loading: "Adding transaction...",
+      success: "Transaction added successfully",
+      error: (error) => error
+    })
+
+    try {
+      await promise
+
+      setIsOpen(false)
+      reset()
+
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/transactions'))
+    } catch (error) {
+      console.error('Failed to add transaction:', error)
+    }
   }
 
   return (
@@ -173,7 +183,7 @@ export default function AddTransactionModal() {
                       }
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent position="popper" align="start" >
+                  <SelectContent position="popper" align="start">
                     <SelectGroup>
                       {filteredCategories.map((category) => (
                         <SelectItem key={category.name} value={category.id}>
