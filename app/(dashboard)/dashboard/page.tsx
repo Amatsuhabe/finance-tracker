@@ -1,5 +1,5 @@
 import WeeklyOverviewChart from "@/components/dashboard/weekly-overview-chart";
-import AddTransactionModal from "@/components/transactions/add-transaction-modal";
+import AddTransactionButton from "@/components/transactions/buttons/add-transaction-button";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +46,7 @@ export default async function Dashboard() {
           <div className="text-xl font-semibold">Dashboard</div>
           <div className="text-muted-foreground text-sm">{month} {year}</div>
         </div>
-        <AddTransactionModal />
+        <AddTransactionButton />
       </div>
 
       <div className="flex gap-4">

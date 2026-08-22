@@ -36,7 +36,7 @@ export default function TransactionItemContent({ transaction, className, ...prop
         </div>
       </div>
 
-      <div className="flex items-center ml-auto gap-6">
+      <div className="flex items-center ml-auto">
         <Badge variant={"secondary"}>
           {transaction.category.name}
         </Badge>

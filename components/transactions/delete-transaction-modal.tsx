@@ -1,22 +1,28 @@
+'use client'
+
 import { toast } from "sonner"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Button } from "../ui/button"
-import { Trash2 } from "lucide-react"
-import { Transaction } from "@/lib/types"
 import TransactionItemContent from "./transaction-item-content"
 import { mutate } from "swr"
-import { useState } from "react"
+import { useTransactionModalStore } from "./transaction-modal-content"
 
-export default function DeleteTransactionModal({ transaction }: { transaction: Transaction }) {
-  const [isOpen, setIsOpen] = useState(false)
+export default function DeleteTransactionModal() {
+  const isOpen = useTransactionModalStore((state) => state.isDeleteOpen)
+  const setIsOpen = useTransactionModalStore((state) => state.setIsDeleteOpen)
+  const transaction = useTransactionModalStore((state) => state.transaction)
+
+  if (!transaction) return null
 
   const handleDelete = async () => {
     const promise = fetch(`/api/transactions/${transaction.id}`, {
       method: "DELETE",
     })
-      .then(res => {
+      .then(async (res) => {
+        const body = await res.json()
+
         if (!res.ok) {
-          throw new Error("Failed to delete transaction")
+          throw new Error(body.message || "Failed to delete transaction")
         }
 
         return res
@@ -40,12 +46,6 @@ export default function DeleteTransactionModal({ transaction }: { transaction: T
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className='text-muted-foreground hover:text-destructive duration-200'>
-          <Trash2 />
-        </Button>
-      </DialogTrigger>
-
       <DialogContent className="max-w-md!">
         <DialogHeader>
           <DialogTitle>Delete transaction?</DialogTitle>

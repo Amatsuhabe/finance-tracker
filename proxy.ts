@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authClient } from "./lib/auth-client";
 import { auth } from "./lib/auth";
 
 export async function proxy(request: NextRequest) {

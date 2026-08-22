@@ -21,5 +21,3 @@ export const createCategoriesStore = (initState: CategoriesState = defaultCatego
     setCategories: (categories: Category[]) => set({ categories })
   }))
 }
-
-export const categoriesStore = createCategoriesStore()

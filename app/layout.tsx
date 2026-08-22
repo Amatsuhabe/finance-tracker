@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import {
-  SidebarProvider,
-} from "@/components/ui/sidebar"
 import "./globals.css";
-import Header from "@/components/header";
-import AppSidebar from "@/components/app-sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -38,7 +33,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <TooltipProvider>
           {children}
-          <Toaster position="top-right"></Toaster>
+          <Toaster richColors position="top-right"></Toaster>
         </TooltipProvider>
       </body>
     </html>

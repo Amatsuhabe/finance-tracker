@@ -11,30 +11,50 @@ import { toast } from "sonner"
 import { mutate } from "swr"
 import TransactionModalContent, { useTransactionModalStore } from "./transaction-modal-content"
 import { Button } from "../ui/button"
+import { isEqual } from "lodash"
 
-export default function AddTransactionModal() {
-  const isOpen = useTransactionModalStore((state) => state.isAddOpen)
-  const setIsOpen = useTransactionModalStore((state) => state.setIsAddOpen)
+export default function EditTransactionModal() {
+  const isOpen = useTransactionModalStore((state) => state.isEditOpen)
+  const setIsOpen = useTransactionModalStore((state) => state.setIsEditOpen)
+
+  const transaction = useTransactionModalStore((state) => state.transaction)
+
+  if (!transaction) return null
+
+  const defaultValues: TransactionData = {
+    amount: transaction.amount,
+    type: transaction.type == "income" ? transaction.type : "expense",
+    date: new Date(transaction.date),
+    description: transaction.description || "",
+    categoryId: transaction.category.id,
+  }
 
   const onSubmit = async (data: TransactionData) => {
-    const promise = fetch("/api/transactions", {
-      method: "POST",
+    if (isEqual(data, defaultValues)) {
+      setIsOpen(false)
+      return
+    }
+
+    const promise = fetch(`/api/transactions/${transaction.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(data)
     })
-      .then(res => {
+      .then(async (res) => {
+        const body = await res.json()
+
         if (!res.ok) {
-          throw new Error("Failed to add transaction")
+          throw new Error(body.message || "Failed to edit transaction")
         }
 
         return res
       })
 
     toast.promise(promise, {
-      loading: "Adding transaction...",
-      success: "Transaction added successfully",
+      loading: "Editing transaction...",
+      success: "Transaction edited successfully",
       error: (error) => error
     })
 
@@ -53,16 +73,16 @@ export default function AddTransactionModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="md:max-w-md md:w-full" >
         <DialogHeader className="text-base font-medium">
-          Add Transaction
+          Edit Transaction
         </DialogHeader>
 
-        <TransactionModalContent formId="add-transaction-modal" onSubmit={onSubmit}></TransactionModalContent>
-        
+        <TransactionModalContent formId="edit-transaction-modal" defaultValues={defaultValues} onSubmit={onSubmit} />
+
         <DialogFooter>
           <Button variant={"outline"} type="button" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit" form="add-transaction-modal">Save Transaction</Button>
+          <Button type="submit" form="edit-transaction-modal">Save Transaction</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
