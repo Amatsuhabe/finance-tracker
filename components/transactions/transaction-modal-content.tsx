@@ -57,7 +57,6 @@ export const useTransactionModalStore = create<TransactionModalState>((set) => (
 export default function TransactionModalContent({ defaultValues, onSubmit, formId }: { defaultValues?: Partial<TransactionData>; onSubmit: (data: TransactionData) => void; formId?: string }) {
   const categories = useCategoriesStore((state) => state.categories)
 
-
   const { control, handleSubmit, setValue, reset } = useForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -68,8 +67,6 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
       categoryId: defaultValues?.categoryId || categories[0]?.id || "",
     }
   })
-
-  console.log({ defaultValues })
 
   const categoryId = useWatch({ control, name: 'categoryId' });
   const type = useWatch({ control, name: 'type' });

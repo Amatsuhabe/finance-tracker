@@ -1,6 +1,6 @@
 import { Category } from "./types";
 
-export const DEFAULT_CATEGORIES: Category[] = [
+export const DEFAULT_CATEGORIES: Omit<Category, "id">[] = [
   { name: "Salary", icon: "briefcase", color: "#22d3ee", type: "income" },
   { name: "Freelance", icon: "laptop", color: "#34d399", type: "income" },
   { name: "Food & Dining", icon: "utensils-crossed", color: "#f59e0b", type: "expense" },
@@ -11,4 +11,19 @@ export const DEFAULT_CATEGORIES: Category[] = [
   { name: "Utilities", icon: "zap", color: "#fbbf24", type: "expense" },
   { name: "Rent", icon: "home", color: "#94a3b8", type: "expense" },
   { name: "Investments", icon: "trending-up", color: "#2dd4bf", type: "both" },
+]
+
+export const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
 ]

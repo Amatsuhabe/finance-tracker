@@ -38,7 +38,9 @@ export default function DeleteTransactionModal() {
       await promise
 
       setIsOpen(false)
+
       mutate((key) => typeof key === 'string' && key.startsWith('/api/transactions'))
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/dashboard/summary'))
     } catch (error) {
       console.error(error)
     }

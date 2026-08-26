@@ -44,6 +44,7 @@ export default function AddTransactionModal() {
       setIsOpen(false)
 
       mutate((key) => typeof key === 'string' && key.startsWith('/api/transactions'))
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/dashboard/summary'))
     } catch (error) {
       console.error('Failed to add transaction:', error)
     }
@@ -51,13 +52,13 @@ export default function AddTransactionModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="md:max-w-md md:w-full" >
+      <DialogContent  className="md:max-w-md md:w-full">
         <DialogHeader className="text-base font-medium">
           Add Transaction
         </DialogHeader>
 
         <TransactionModalContent formId="add-transaction-modal" onSubmit={onSubmit}></TransactionModalContent>
-        
+
         <DialogFooter>
           <Button variant={"outline"} type="button" onClick={() => setIsOpen(false)}>
             Cancel

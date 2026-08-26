@@ -19,3 +19,5 @@ export function hexToRgba(hex: string, opacity: number) {
   const b = parseInt(hex.slice(5, 7), 16)
   return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
+
+export const fetcher = (url: string) => fetch(url).then(res => res.json())

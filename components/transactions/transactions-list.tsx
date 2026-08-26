@@ -3,14 +3,13 @@
 import { Transaction } from "@/lib/types";
 import TransactionItem from "./transaction-item";
 import useSWR from 'swr'
+import { fetcher } from "@/lib/utils";
 
 interface TransactionsListProps extends React.HTMLAttributes<HTMLDivElement> {
   transactions: Transaction[];
   amount?: number;
   skip?: number;
 }
-
-const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function TransactionsList({ transactions, amount, skip = 0, ...props }: TransactionsListProps) {
   const { data } = useSWR<Transaction[]>(`/api/transactions?take=${amount}&skip=${skip}`, fetcher, {

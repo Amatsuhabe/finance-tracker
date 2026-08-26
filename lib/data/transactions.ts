@@ -16,7 +16,7 @@ export async function getTransactions({ take, skip }: GetTransactionsParams = {}
     include: {
       category: true
     },
-    orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ updatedAt: "desc" }, { date: "desc" }],
     take,
     skip
   });

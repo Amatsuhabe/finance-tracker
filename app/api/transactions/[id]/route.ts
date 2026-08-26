@@ -11,7 +11,10 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const transaction = await prisma.transaction.delete({
-      where: { id },
+      where: {
+        id,
+        userId: session.user.id
+      },
     })
 
     if (!transaction) return NextResponse.json({ error: "Transaction not found" }, { status: 404 })

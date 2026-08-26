@@ -64,6 +64,7 @@ export default function EditTransactionModal() {
       setIsOpen(false)
 
       mutate((key) => typeof key === 'string' && key.startsWith('/api/transactions'))
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/dashboard/summary'))
     } catch (error) {
       console.error('Failed to add transaction:', error)
     }

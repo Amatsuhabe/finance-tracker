@@ -1,41 +1,22 @@
-import WeeklyOverviewChart from "@/components/dashboard/weekly-overview-chart";
+import Summary from "@/components/dashboard/summary";
 import AddTransactionButton from "@/components/transactions/buttons/add-transaction-button";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MONTHS } from "@/lib/const";
+import { getSummary } from "@/lib/data/summary";
 import { getTransactions } from "@/lib/data/transactions";
-import { formatCurrency } from "@/lib/utils";
-import { ArrowRight, ReceiptText, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, ReceiptText } from "lucide-react";
 import Link from "next/link";
 
-const mockDashboardData = {
-  month: "June",
-  year: 2026,
-  netBalance: 3843.5,
-  totalIncome: 5850,
-  totalExpenses: 2007,
-  weeks: [
-    {
-      income: 5350,
-      expenses: 1674
-    },
-    {
-      income: 500,
-      expenses: 333
-    },
-    {
-      income: 0,
-      expenses: 0
-    },
-    {
-      income: 0,
-      expenses: 0
-    }
-  ]
-}
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ month: string, year: string, isAllTimePeriod?: string }> }) {
+  const params = await searchParams
 
-export default async function Dashboard() {
-  const { month, year, netBalance, totalIncome, totalExpenses } = mockDashboardData;
+  const summaryMonth = params.month ? Number(params.month) : new Date().getMonth() + 1;
+  const summaryYear = params.year ? Number(params.year) : new Date().getFullYear();
+  const isAllTimePeriod = params.isAllTimePeriod === "true"
+
+  const summary = await getSummary({ month: summaryMonth, year: summaryYear, isAllTimePeriod });
 
   const transactions = await getTransactions({ take: 8 })
 
@@ -44,65 +25,12 @@ export default async function Dashboard() {
       <div className="flex justify-between items-center">
         <div>
           <div className="text-xl font-semibold">Dashboard</div>
-          <div className="text-muted-foreground text-sm">{month} {year}</div>
+          <div className="text-muted-foreground text-sm">{MONTHS[summaryMonth - 1]} {summaryYear}</div>
         </div>
         <AddTransactionButton />
       </div>
 
-      <div className="flex gap-4">
-        <Card className="w-full">
-          <CardHeader className="flex justify-between">
-            <CardTitle className="text-sm text-muted-foreground">Net Balance</CardTitle>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/15">
-              <Wallet className="size-4 text-primary"></Wallet></div>
-          </CardHeader>
-
-          <CardContent>
-            <p className="text-2xl font-bold tracking-tight">{formatCurrency(netBalance)}</p>
-            <p className="mt-1 text-xs text-muted-foreground">This month</p>
-          </CardContent>
-        </Card>
-
-        <Card className="w-full">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Income</CardTitle>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-income/15">
-              <TrendingUp className="size-4 text-income" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tracking-tight text-income">
-              {formatCurrency(totalIncome)}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">This month</p>
-          </CardContent>
-        </Card>
-
-        <Card className="w-full">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Expenses</CardTitle>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-expense/15">
-              <TrendingDown className="size-4 text-expense" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tracking-tight text-expense">
-              {formatCurrency(totalExpenses)}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">This month</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Income vs Expenses</CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">Weekly breakdown for this month</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <WeeklyOverviewChart weeks={mockDashboardData.weeks}></WeeklyOverviewChart>
-        </CardContent>
-      </Card>
+      <Summary {...summary} month={summaryMonth} year={summaryYear} isAllTimePeriod={isAllTimePeriod}></Summary>
 
       <Card className="w-full">
         <CardHeader className="flex justify-between items-center">
