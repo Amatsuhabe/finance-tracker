@@ -14,7 +14,7 @@ export default function WeeklyOverviewChart({ weeks }: WeeklyOverviewChartProps)
   }));
 
   return (
-    <ResponsiveContainer height={240} width="100%">
+    <ResponsiveContainer height={240} width="100%" debounce={50}>
       <BarChart
         data={data}
         barGap={4}
