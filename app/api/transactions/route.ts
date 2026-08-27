@@ -1,24 +1,57 @@
 import getSession from "@/lib/auth/get-session";
 import { getTransactions } from "@/lib/data/transactions";
+import { transactionApiSchema } from "@/lib/schemas/add-transaction";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const session = await getSession()
 
-  if (!session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session) return NextResponse.json({ error: "Unathorized" }, { status: 401 })
 
-  const body = await req.json()
+  let body: unknown
+
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 })
+  }
+
+  const result = transactionApiSchema.safeParse(body)
+
+  if (!result.success) {
+    return NextResponse.json(
+      { error: "Invalid transaction data", details: result.error.flatten() },
+      { status: 400 }
+    )
+  }
+
+  const data = result.data
+
+  const category = await prisma.category.findFirst({
+    where: {
+      id: data.categoryId,
+      userId: session.user.id,
+    },
+  })
+
+  if (!category) {
+    return NextResponse.json(
+      { error: "Category not found" },
+      { status: 404 }
+    )
+  }
 
   await prisma.transaction.create({
     data: {
-      amount: body.amount,
-      type: body.type,
-      date: new Date(body.date),
-      description: body.description,
+      amount: data.amount,
+      type: data.type,
+      date: data.date,
+      description: data.description,
       category: {
         connect: {
-          id: body.categoryId
+          id: data.categoryId,
+          userId: session.user.id
         }
       },
       user: {

@@ -18,4 +18,18 @@ export const transactionSchema = z.object({
     .optional(),
 })
 
+export const transactionApiSchema = z.object({
+  type: z.enum(["income", "expense"]),
+  amount: z.number().positive(),
+  categoryId: z.string().trim(),
+  date: z.preprocess((value) => {
+    if (typeof value === "string" || value instanceof Date) {
+      return new Date(value)
+    }
+
+    return value
+  }, z.date()),
+  description: z.string().optional(),
+})
+
 export type TransactionData = z.infer<typeof transactionSchema>

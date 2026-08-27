@@ -84,13 +84,8 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
     }
   }, [filteredCategories, categoryId, setValue])
 
-  function handleFormSubmit(data: TransactionData) {
-    onSubmit(data)
-    reset()
-  }
-
   return (
-    <form id={formId} className="space-y-4" onSubmit={handleSubmit(handleFormSubmit)}>
+    <form id={formId} className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <Controller
         name="type"
         control={control}
