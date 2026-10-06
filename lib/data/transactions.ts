@@ -1,17 +1,15 @@
-import getSession from "../auth/get-session";
 import { prisma } from "../prisma";
 
 interface GetTransactionsParams {
+  userId: string;
   take?: number;
   skip?: number;
 }
 
-export async function getTransactions({ take, skip }: GetTransactionsParams = {}) {
-  const session = await getSession()
-
+export async function getTransactions({ userId, take, skip }: GetTransactionsParams) {
   return prisma.transaction.findMany({
     where: {
-      userId: session.user.id
+      userId
     },
     include: {
       category: true

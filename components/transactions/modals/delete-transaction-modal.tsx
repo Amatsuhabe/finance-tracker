@@ -1,9 +1,9 @@
 'use client'
 
 import { toast } from "sonner"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Button } from "../ui/button"
-import TransactionItemContent from "./transaction-item-content"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Button } from "../../ui/button"
+import TransactionItemContent from "../transaction-item-content"
 import { mutate } from "swr"
 import { useTransactionModalStore } from "./transaction-modal-content"
 

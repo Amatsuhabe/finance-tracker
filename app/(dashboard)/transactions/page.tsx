@@ -1,11 +1,16 @@
 import AddTransactionButton from "@/components/transactions/buttons/add-transaction-button";
 import TransactionsList from "@/components/transactions/transactions-list";
 import { Card, CardContent, } from "@/components/ui/card";
+import getSession from "@/lib/auth/get-session";
 import { getTransactions } from "@/lib/data/transactions";
 import { ReceiptText } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function Transactions() {
-  const transactions = await getTransactions()
+  const session = await getSession()
+  if (!session?.user.id) redirect("/sign-in")
+
+  const transactions = await getTransactions({ userId: session.user.id })
 
   return (
     <div className="flex flex-col gap-6">

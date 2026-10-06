@@ -1,4 +1,62 @@
 import { Category } from "./types";
+import {
+  ShoppingCart, Utensils, Coffee, Pizza, Apple, Beer, Wine, Sandwich, Car, Bus, Train, Bike, Fuel, Plane, ParkingCircle, Ship, Home, Lightbulb, Wifi, Droplets, Flame, Wrench, Sofa, Smartphone, HeartPulse, Pill, Stethoscope, Dumbbell, Film, Gamepad2, Music, Ticket, Book, Headphones, Shirt, ShoppingBag, Gift, Laptop, Baby, PawPrint, Scissors, GraduationCap, ShieldCheck, HandHeart, Wallet, PiggyBank, CreditCard, Landmark, Banknote, TrendingUp, Receipt, Briefcase
+} from "lucide-react";
+
+export const CATEGORY_ICONS = {
+  "shopping-cart": ShoppingCart,
+  utensils: Utensils,
+  coffee: Coffee,
+  pizza: Pizza,
+  apple: Apple,
+  beer: Beer,
+  wine: Wine,
+  sandwich: Sandwich,
+  car: Car,
+  bus: Bus,
+  train: Train,
+  bike: Bike,
+  fuel: Fuel,
+  plane: Plane,
+  "parking-circle": ParkingCircle,
+  ship: Ship,
+  home: Home,
+  lightbulb: Lightbulb,
+  wifi: Wifi,
+  droplets: Droplets,
+  flame: Flame,
+  wrench: Wrench,
+  sofa: Sofa,
+  smartphone: Smartphone,
+  "heart-pulse": HeartPulse,
+  pill: Pill,
+  stethoscope: Stethoscope,
+  dumbbell: Dumbbell,
+  film: Film,
+  "gamepad-2": Gamepad2,
+  music: Music,
+  ticket: Ticket,
+  book: Book,
+  headphones: Headphones,
+  shirt: Shirt,
+  "shopping-bag": ShoppingBag,
+  gift: Gift,
+  laptop: Laptop,
+  baby: Baby,
+  "paw-print": PawPrint,
+  scissors: Scissors,
+  "graduation-cap": GraduationCap,
+  "shield-check": ShieldCheck,
+  "hand-heart": HandHeart,
+  wallet: Wallet,
+  "piggy-bank": PiggyBank,
+  "credit-card": CreditCard,
+  landmark: Landmark,
+  banknote: Banknote,
+  "trending-up": TrendingUp,
+  receipt: Receipt,
+  briefcase: Briefcase,
+};
 
 export const DEFAULT_CATEGORIES: Omit<Category, "id">[] = [
   { name: "Salary", icon: "briefcase", color: "#22d3ee", type: "income" },
@@ -26,4 +84,17 @@ export const MONTHS = [
   "October",
   "November",
   "December"
+]
+
+export const CATEGORY_COLORS = [
+  "#e11d48",
+  "#f97316",
+  "#eab308",
+  "#84cc16",
+  "#22c55e",
+  "#06b6d4",
+  "#3b82f6",
+  "#6366f1",
+  "#a855f7",
+  "#ec4899",
 ]

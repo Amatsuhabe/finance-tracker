@@ -1,18 +1,16 @@
-import getSession from "../auth/get-session";
 import { prisma } from "../prisma";
 
 interface GetSummaryParams {
+  userId: string;
   month: number;
   year: number;
   isAllTimePeriod?: boolean
 }
 
-export async function getSummary({ month, year, isAllTimePeriod = false }: GetSummaryParams) {
-  const session = await getSession()
-
+export async function getSummary({ userId, month, year, isAllTimePeriod = false }: GetSummaryParams) {
   const transactions = await prisma.transaction.findMany({
     where: {
-      userId: session.user.id,
+      userId,
       date: isAllTimePeriod ? undefined : {
         gte: new Date(year, month - 1, 1),
         lt: new Date(year, month, 1)

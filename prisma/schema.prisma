@@ -80,6 +80,11 @@ model Verification {
 enum TransactionType {
   income
   expense
+}
+
+enum CategoryType {
+  income
+  expense
   both
 }
 
@@ -88,7 +93,7 @@ model Category {
   name         String
   icon         String
   color        String
-  type         TransactionType
+  type         CategoryType
   userId       String
   user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]

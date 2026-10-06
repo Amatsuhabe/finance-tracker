@@ -2,7 +2,7 @@
 
 import { Pencil } from "lucide-react"
 import { Button } from "../../ui/button"
-import { useTransactionModalStore } from "../transaction-modal-content"
+import { useTransactionModalStore } from "../modals/transaction-modal-content"
 import { Transaction } from "@/lib/types"
 
 export default function EditTransactionButton({ transaction }: { transaction: Transaction }) {

@@ -13,11 +13,21 @@ export function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
-export function hexToRgba(hex: string, opacity: number) {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
+export function hexToRgba(color: string, opacity: number) {
+  if (/^rgba?\(/i.test(color.trim())) return color
+
+  const r = parseInt(color.slice(1, 3), 16)
+  const g = parseInt(color.slice(3, 5), 16)
+  const b = parseInt(color.slice(5, 7), 16)
   return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
-export const fetcher = (url: string) => fetch(url).then(res => res.json())
+export async function fetcher<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}

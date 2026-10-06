@@ -3,7 +3,7 @@
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 interface WeeklyOverviewChartProps {
-  summary: { date: Date; totalDayIncome: number; totalDayExpenses: number }[]
+  summary: { date: Date | string; totalDayIncome: number; totalDayExpenses: number }[]
 }
 
 export default function CashFlowChart({ summary }: WeeklyOverviewChartProps) {

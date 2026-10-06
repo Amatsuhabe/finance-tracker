@@ -7,30 +7,43 @@ import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 
-interface SummaryProps {
-  month: number,
-  year: number,
-  isAllTimePeriod: boolean,
+interface SummaryData {
   netBalance: number,
   totalIncome: number,
   totalExpenses: number,
   monthSummary: {
-    date: Date;
+    date: Date | string;
     totalDayIncome: number;
     totalDayExpenses: number;
   }[]
 }
 
-export default function Summary(summary: SummaryProps) {
+interface SummaryProps {
+  month: number;
+  year: number;
+  isAllTimePeriod: boolean;
+}
+
+export default function Summary({ month: initialMonth, year: initialYear, isAllTimePeriod: initialIsAllTimePeriod }: SummaryProps) {
   const searchParams = useSearchParams()
 
-  const month = searchParams.get("month") ?? summary.month.toString()
-  const year = searchParams.get("year") ?? summary.year.toString()
-  const isAllTimePeriod = searchParams.get("isAllTimePeriod") ?? summary.isAllTimePeriod
+  const month = searchParams.get("month") ?? initialMonth.toString()
+  const year = searchParams.get("year") ?? initialYear.toString()
+  const isAllTimePeriod = searchParams.get("isAllTimePeriod") ?? String(initialIsAllTimePeriod)
 
-  const { data } = useSWR(`/api/dashboard/summary?month=${month}&year=${year}&isAllTimePeriod=${isAllTimePeriod}`, fetcher, {
-    fallbackData: summary,
-  })
+  const { data, error } = useSWR<SummaryData>(
+    `/api/dashboard/summary?month=${month}&year=${year}&isAllTimePeriod=${isAllTimePeriod}`,
+    fetcher<SummaryData>,
+    { keepPreviousData: true }
+  )
+
+  if (!data) {
+    return (
+      <p role={error ? "alert" : "status"} className="text-sm text-muted-foreground">
+        {error ? "Failed to load summary." : "Loading summary..."}
+      </p>
+    )
+  }
 
   const { netBalance, totalIncome, totalExpenses, monthSummary } = data
 

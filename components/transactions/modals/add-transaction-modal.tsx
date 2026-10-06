@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner"
 import { mutate } from "swr"
 import TransactionModalContent, { useTransactionModalStore } from "./transaction-modal-content"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 
 export default function AddTransactionModal() {
   const isOpen = useTransactionModalStore((state) => state.isAddOpen)
@@ -25,11 +25,15 @@ export default function AddTransactionModal() {
       body: JSON.stringify(data)
     })
       .then(res => {
+        console.log(!res.ok)
         if (!res.ok) {
           throw new Error("Failed to add transaction")
         }
 
         return res
+      })
+      .catch(error => {
+        console.log({ error })
       })
 
     toast.promise(promise, {
@@ -52,7 +56,7 @@ export default function AddTransactionModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent  className="md:max-w-md md:w-full">
+      <DialogContent className="md:max-w-md md:w-full">
         <DialogHeader className="text-base font-medium">
           Add Transaction
         </DialogHeader>
@@ -63,7 +67,7 @@ export default function AddTransactionModal() {
           <Button variant={"outline"} type="button" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit" form="add-transaction-modal">Save Transaction</Button>
+          <Button type="submit" form="add-transaction-modal">Add Transaction</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

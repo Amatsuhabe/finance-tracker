@@ -7,7 +7,9 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const session = await getSession()
 
-  if (!session) return NextResponse.json({ error: "Unathorized" }, { status: 401 })
+  if (!session) {
+    return NextResponse.json({ error: "Unathorized" }, { status: 401 })
+  }
 
   let body: unknown
 
@@ -66,12 +68,15 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  const session = await getSession()
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
   const { searchParams } = new URL(req.url)
 
   const take = Number(searchParams.get('take'))
   const skip = Number(searchParams.get('skip'))
 
-  const transactions = await getTransactions({ take, skip })
+  const transactions = await getTransactions({ userId: session.user.id, take, skip })
 
   return NextResponse.json(transactions, { status: 200 })
 }

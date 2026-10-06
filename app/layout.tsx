@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <TooltipProvider>
           {children}
-          <Toaster richColors position="top-right"></Toaster>
+          <Toaster richColors position="top-center"></Toaster>
         </TooltipProvider>
       </body>
     </html>

@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner"
 import { mutate } from "swr"
 import TransactionModalContent, { useTransactionModalStore } from "./transaction-modal-content"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { isEqual } from "lodash"
 
 export default function EditTransactionModal() {

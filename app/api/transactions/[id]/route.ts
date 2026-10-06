@@ -9,7 +9,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
   const session = await getSession()
 
-  if (!session) return NextResponse.json({ error: "Unathorized" }, { status: 401 })
+  if (!session) {
+    return NextResponse.json({ error: "Unathorized" }, { status: 401 })
+  }
 
   try {
     const transaction = await prisma.transaction.delete({
@@ -19,7 +21,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       },
     })
 
-    if (!transaction) return NextResponse.json({ error: "Transaction not found" }, { status: 404 })
+    if (!transaction) {
+      return NextResponse.json({ error: "Transaction not found" }, { status: 404 })
+    }
 
     return NextResponse.json({ success: true })
   } catch {
@@ -34,7 +38,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const { id } = await params
   const session = await getSession()
 
-  if (!session) return NextResponse.json({ error: "Unathorized" }, { status: 401 })
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
 
   let body: unknown
 
@@ -69,32 +75,25 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     )
   }
 
-  try {
-    await prisma.transaction.update({
-      where: {
-        id,
-        userId: session.user.id
-      },
-      data: {
-        amount: data.amount,
-        type: data.type,
-        date: data.date,
-        description: data.description,
-        category: {
-          connect: {
-            id: data.categoryId,
-            userId: session.user.id
-          }
+  const transaction = await prisma.transaction.update({
+    where: {
+      id,
+      userId: session.user.id
+    },
+    data: {
+      amount: data.amount,
+      type: data.type,
+      date: data.date,
+      description: data.description,
+      category: {
+        connect: {
+          id: data.categoryId,
+          userId: session.user.id
         }
       }
-    })
+    }
+  })
 
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to edit transaction" },
-      { status: 500 }
-    )
-  }
+  return NextResponse.json(transaction, { status: 200 })
 }
 

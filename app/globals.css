@@ -95,6 +95,7 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    @apply scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent
   }
   body {
     @apply bg-background text-foreground;

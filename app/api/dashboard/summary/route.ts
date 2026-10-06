@@ -1,7 +1,11 @@
 import { getSummary } from "@/lib/data/summary";
+import getSession from "@/lib/auth/get-session";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+  const session = await getSession()
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
   const isAllTimePeriod = request.nextUrl.searchParams.get("isAllTimePeriod") === "true"
 
   const summaryMonth = Number(request.nextUrl.searchParams.get("month"))
@@ -21,7 +25,7 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  const summary = await getSummary({ month: summaryMonth, year: summaryYear, isAllTimePeriod })
+  const summary = await getSummary({ userId: session.user.id, month: summaryMonth, year: summaryYear, isAllTimePeriod })
 
   return NextResponse.json(summary, { status: 200 })
 }

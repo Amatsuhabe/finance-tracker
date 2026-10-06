@@ -1,4 +1,5 @@
-type TransactionType = "income" | "expense" | "both"
+type TransactionType = "income" | "expense"
+type CategoryType = "income" | "expense" | "both"
 
 export interface Transaction {
   id: string;
@@ -14,5 +15,5 @@ export interface Category {
   name: string,
   color: string,
   icon: string,
-  type: TransactionType
+  type: CategoryType
 }

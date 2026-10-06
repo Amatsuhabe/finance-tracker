@@ -4,24 +4,24 @@ import { create } from "zustand";
 import { TransactionData, transactionSchema } from "@/lib/schemas/add-transaction"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm, useWatch } from "react-hook-form"
-import { cn } from "@/lib/utils"
+import { cn, fetcher } from "@/lib/utils"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group"
-import { Label } from "../ui/label"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
+import { Label } from "../../ui/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { Button } from "../../ui/button"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { Calendar } from "../ui/calendar"
-import { Textarea } from "../ui/textarea"
+import { Calendar } from "../../ui/calendar"
+import { Textarea } from "../../ui/textarea"
 import { useEffect,} from "react"
-import { useCategoriesStore } from "../providers/categories-provider"
 import { DynamicIcon, IconName } from "lucide-react/dynamic"
-import { Transaction } from "@/lib/types";
+import { Category, Transaction } from "@/lib/types";
+import useSWR from "swr";
 
 
 interface TransactionModalState {
@@ -55,9 +55,9 @@ export const useTransactionModalStore = create<TransactionModalState>((set) => (
 }))
 
 export default function TransactionModalContent({ defaultValues, onSubmit, formId }: { defaultValues?: Partial<TransactionData>; onSubmit: (data: TransactionData) => void; formId?: string }) {
-  const categories = useCategoriesStore((state) => state.categories)
+  const { data: categories = [], error: categoriesError } = useSWR("/api/categories", fetcher<Category[]>)
 
-  const { control, handleSubmit, setValue, reset } = useForm({
+  const { control, handleSubmit, setValue } = useForm({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       amount: defaultValues?.amount ? String(defaultValues.amount) : "",
@@ -120,14 +120,14 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
         name="amount"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="flex flex-col gap-1.5">
+          <div className="space-y-2">
             <Label htmlFor="amount">Amount</Label>
             <InputGroup>
               <InputGroupAddon>
                 <InputGroupText>$</InputGroupText>
               </InputGroupAddon>
+              
               <InputGroupInput {...field} onChange={(e) => field.onChange(e.target.value)} className="tabular-nums" type="number" min={0} step={1} placeholder="0.00"></InputGroupInput>
-
             </InputGroup>
             {fieldState.error && <p className="text-xs text-destructive">{fieldState.error.message}</p>}
           </div>
@@ -138,7 +138,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
         name="categoryId"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="flex flex-col gap-1.5">
+          <div className="space-y-2">
             <Label htmlFor="categoryId">Category</Label>
             <Select value={field.value} onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
               <SelectTrigger id="categoryId" className="min-w-48">
@@ -171,6 +171,11 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
               </SelectContent>
             </Select>
             {fieldState.error && <p className="text-xs text-destructive">{fieldState.error.message}</p>}
+            {categoriesError && (
+              <p role="alert" className="text-xs text-destructive">
+                Failed to load categories. Please try again.
+              </p>
+            )}
           </div>
         )}>
       </Controller>
@@ -179,7 +184,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
         name="date"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="flex flex-col gap-1.5">
+          <div className="space-y-2">
             <Label htmlFor="date">Date</Label>
 
             <Popover>
@@ -208,7 +213,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
         name="description"
         control={control}
         render={({ field, fieldState }) => (
-          <div className="flex flex-col gap-1.5">
+          <div className="space-y-2">
             <Label htmlFor="description">Description (optional)</Label>
 
             <Textarea {...field} placeholder="Notes about this transaction..." />

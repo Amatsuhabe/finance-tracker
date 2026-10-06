@@ -1,12 +1,16 @@
 import AppSidebar from "@/components/app-sidebar";
+import AddCategoryModal from "@/components/categories/modals/add-category-model";
+import DeleteCategoryModal from "@/components/categories/modals/delete-category-modal";
+import EditCategoryModal from "@/components/categories/modals/edit-category-modal";
 import Header from "@/components/header";
-import CategoriesProvider from "@/components/providers/categories-provider";
-import AddTransactionModal from "@/components/transactions/add-transaction-modal";
-import DeleteTransactionModal from "@/components/transactions/delete-transaction-modal";
-import EditTransactionModal from "@/components/transactions/edit-transaction-modal";
+import AddTransactionModal from "@/components/transactions/modals/add-transaction-modal";
+import DeleteTransactionModal from "@/components/transactions/modals/delete-transaction-modal";
+import EditTransactionModal from "@/components/transactions/modals/edit-transaction-modal";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import getSession from "@/lib/auth/get-session";
-import { prisma } from "@/lib/prisma";
+import { getCategories } from "@/lib/data/categories";
+import { redirect } from "next/navigation";
+import { SWRConfig } from "swr";
 
 export default async function Layout({
   children,
@@ -14,22 +18,12 @@ export default async function Layout({
   children: React.ReactNode;
 }>) {
   const session = await getSession()
+  if (!session?.user.id) redirect("/sign-in")
 
-  const categories = await prisma.category.findMany({
-    where: {
-      userId: session.user.id
-    },
-    select: {
-      icon: true,
-      name: true,
-      color: true,
-      type: true,
-      id: true
-    }
-  })
+  const categories = await getCategories({ userId: session.user.id })
 
   return (
-    <CategoriesProvider initialCategories={categories}>
+    <SWRConfig value={{ fallback: { "/api/categories": categories } }}>
       <SidebarProvider>
         <AppSidebar />
         <div className="w-full">
@@ -39,11 +33,15 @@ export default async function Layout({
           </div>
         </div>
 
+        <AddCategoryModal />
+        <EditCategoryModal />
+        <DeleteCategoryModal />
+
         <AddTransactionModal />
         <EditTransactionModal />
         <DeleteTransactionModal />
 
       </SidebarProvider>
-    </CategoriesProvider>
+    </SWRConfig>
   )
 }

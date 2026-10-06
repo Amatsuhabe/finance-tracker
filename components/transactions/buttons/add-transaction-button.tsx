@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react"
 import { Button } from "../../ui/button"
-import { useTransactionModalStore } from "../transaction-modal-content"
+import { useTransactionModalStore } from "../modals/transaction-modal-content"
 
 export default function AddTransactionButton() {
   const setIsOpen = useTransactionModalStore((state) => state.setIsAddOpen)

@@ -6,9 +6,5 @@ export default async function getSession(){
     headers: await headers()
   })
 
-  if (!session?.user.id) {
-    throw new Error("User is not authenticated")
-  }
-
   return session
 }

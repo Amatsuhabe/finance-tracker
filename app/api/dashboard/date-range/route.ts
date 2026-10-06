@@ -4,18 +4,16 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const session = await getSession()
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { _min, _max } = await prisma.transaction.aggregate({
+  const { _min } = await prisma.transaction.aggregate({
     where: {
       userId: session.user.id
     },
     _min: {
       date: true
-    },
-    _max: {
-      date: true
     }
   })
 
-  return NextResponse.json({ min: _min.date, max: _max.date }, { status: 200 })
+  return NextResponse.json({ min: _min.date, max: new Date() }, { status: 200 })
 }
