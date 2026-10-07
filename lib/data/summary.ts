@@ -1,4 +1,5 @@
 import { prisma } from "../prisma";
+import { getDateMonthRange, getDatePartsUtc, getDaysInMonth } from "../date-time";
 
 interface GetSummaryParams {
   userId: string;
@@ -8,12 +9,13 @@ interface GetSummaryParams {
 }
 
 export async function getSummary({ userId, month, year, isAllTimePeriod = false }: GetSummaryParams) {
+  const { start, end } = getDateMonthRange(year, month);
   const transactions = await prisma.transaction.findMany({
     where: {
       userId,
       date: isAllTimePeriod ? undefined : {
-        gte: new Date(year, month - 1, 1),
-        lt: new Date(year, month, 1)
+        gte: start,
+        lt: end,
       }
     }
   })
@@ -42,27 +44,22 @@ export async function getSummary({ userId, month, year, isAllTimePeriod = false 
     }
   }, 0);
 
-  const monthSummary = new Array(new Date(year, month, 0).getDate()).fill(0).map((_, index) => {
-    const date = new Date(year, month - 1, index + 1);
+  const monthSummary = Array.from({ length: getDaysInMonth(year, month) }, (_, index) => ({
+    date: new Date(Date.UTC(year, month - 1, index + 1)),
+    totalDayIncome: 0,
+    totalDayExpenses: 0,
+  }));
 
-    const totalDayIncome = transactions.reduce((acc, transaction) => {
-      if (transaction.type === "income" && new Date(transaction.date).getDate() === date.getDate()) {
-        return acc + transaction.amount;
-      } else {
-        return acc;
-      }
-    }, 0);
+  for (const transaction of transactions) {
+    const transactionDate = getDatePartsUtc(transaction.date);
+    if (transactionDate.year !== year || transactionDate.month !== month) continue;
 
-    const totalDayExpenses = transactions.reduce((acc, transaction) => {
-      if (transaction.type === "expense" && new Date(transaction.date).getDate() === date.getDate()) {
-        return acc + transaction.amount;
-      } else {
-        return acc;
-      }
-    }, 0);
+    const dailySummary = monthSummary[transactionDate.day - 1];
 
-    return { date, totalDayIncome, totalDayExpenses };
-  });
+    if (!dailySummary) continue;
+    if (transaction.type === "income") dailySummary.totalDayIncome += transaction.amount;
+    else dailySummary.totalDayExpenses += transaction.amount;
+  }
   
   return { netBalance, totalIncome, totalExpenses, monthSummary };
 }

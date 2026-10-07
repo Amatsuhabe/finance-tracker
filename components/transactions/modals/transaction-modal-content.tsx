@@ -22,6 +22,7 @@ import { useEffect,} from "react"
 import { DynamicIcon, IconName } from "lucide-react/dynamic"
 import { Category, Transaction } from "@/lib/types";
 import useSWR from "swr";
+import { dateKeyToLocalDate, formatDateKey } from "@/lib/date-time";
 
 
 interface TransactionModalState {
@@ -54,7 +55,7 @@ export const useTransactionModalStore = create<TransactionModalState>((set) => (
   setIsEditOpen: (isOpen: boolean) => set({ isEditOpen: isOpen }),
 }))
 
-export default function TransactionModalContent({ defaultValues, onSubmit, formId }: { defaultValues?: Partial<TransactionData>; onSubmit: (data: TransactionData) => void; formId?: string }) {
+export default function TransactionModalContent({ defaultValues, today, onSubmit, formId }: { defaultValues?: Partial<TransactionData>; today: string; onSubmit: (data: TransactionData) => void; formId?: string }) {
   const { data: categories = [], error: categoriesError } = useSWR("/api/categories", fetcher<Category[]>)
 
   const { control, handleSubmit, setValue } = useForm({
@@ -62,7 +63,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
     defaultValues: {
       amount: defaultValues?.amount ? String(defaultValues.amount) : "",
       type: defaultValues?.type || "expense",
-      date: defaultValues?.date || new Date(),
+      date: defaultValues?.date || dateKeyToLocalDate(today),
       description: defaultValues?.description || "",
       categoryId: defaultValues?.categoryId || categories[0]?.id || "",
     }
@@ -80,7 +81,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
     )
 
     if (!categoryId || !hasValidSelection) {
-      setValue('categoryId', filteredCategories[0]?.id || "")
+      setValue('categoryId', filteredCategories[0].id)
     }
   }, [filteredCategories, categoryId, setValue])
 
@@ -199,6 +200,7 @@ export default function TransactionModalContent({ defaultValues, onSubmit, formI
                 <Calendar
                   mode="single"
                   selected={field.value}
+                  disabled={(date) => formatDateKey(date) > today}
                   onSelect={value => field.onChange(value)}
                 ></Calendar>
               </PopoverContent>

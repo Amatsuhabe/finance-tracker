@@ -18,32 +18,24 @@ interface SummaryData {
   }[]
 }
 
-interface SummaryProps {
+interface SummaryProps extends SummaryData {
   month: number;
   year: number;
   isAllTimePeriod: boolean;
 }
 
-export default function Summary({ month: initialMonth, year: initialYear, isAllTimePeriod: initialIsAllTimePeriod }: SummaryProps) {
+export default function Summary(summary: SummaryProps) {
   const searchParams = useSearchParams()
 
-  const month = searchParams.get("month") ?? initialMonth.toString()
-  const year = searchParams.get("year") ?? initialYear.toString()
-  const isAllTimePeriod = searchParams.get("isAllTimePeriod") ?? String(initialIsAllTimePeriod)
+  const month = searchParams.get("month") ?? summary.month.toString()
+  const year = searchParams.get("year") ?? summary.year.toString()
+  const isAllTimePeriod = searchParams.get("isAllTimePeriod") ?? String(summary.isAllTimePeriod)
 
-  const { data, error } = useSWR<SummaryData>(
+  const { data = summary } = useSWR<SummaryData>(
     `/api/dashboard/summary?month=${month}&year=${year}&isAllTimePeriod=${isAllTimePeriod}`,
     fetcher<SummaryData>,
-    { keepPreviousData: true }
+    { fallbackData: summary }
   )
-
-  if (!data) {
-    return (
-      <p role={error ? "alert" : "status"} className="text-sm text-muted-foreground">
-        {error ? "Failed to load summary." : "Loading summary..."}
-      </p>
-    )
-  }
 
   const { netBalance, totalIncome, totalExpenses, monthSummary } = data
 

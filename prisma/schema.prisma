@@ -21,6 +21,7 @@ model User {
   image         String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  timezone      String        @default("UTC")
   sessions      Session[]
   accounts      Account[]
   categories    Category[]
@@ -89,13 +90,13 @@ enum CategoryType {
 }
 
 model Category {
-  id           String          @id @default(cuid())
+  id           String        @id @default(cuid())
   name         String
   icon         String
   color        String
   type         CategoryType
   userId       String
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@map("category")
@@ -108,7 +109,7 @@ model Transaction {
   categoryId  String
   description String?
   category    Category        @relation(fields: [categoryId], references: [id])
-  date        DateTime        @default(now())
+  date        DateTime        @db.Date
   userId      String
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime        @default(now())

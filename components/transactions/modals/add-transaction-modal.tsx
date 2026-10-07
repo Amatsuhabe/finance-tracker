@@ -11,8 +11,9 @@ import { toast } from "sonner"
 import { mutate } from "swr"
 import TransactionModalContent, { useTransactionModalStore } from "./transaction-modal-content"
 import { Button } from "../../ui/button"
+import { formatDateKey } from "@/lib/date-time"
 
-export default function AddTransactionModal() {
+export default function AddTransactionModal({ today }: { today: string }) {
   const isOpen = useTransactionModalStore((state) => state.isAddOpen)
   const setIsOpen = useTransactionModalStore((state) => state.setIsAddOpen)
 
@@ -22,18 +23,14 @@ export default function AddTransactionModal() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ ...data, date: formatDateKey(data.date) })
     })
       .then(res => {
-        console.log(!res.ok)
         if (!res.ok) {
           throw new Error("Failed to add transaction")
         }
 
         return res
-      })
-      .catch(error => {
-        console.log({ error })
       })
 
     toast.promise(promise, {
@@ -61,7 +58,7 @@ export default function AddTransactionModal() {
           Add Transaction
         </DialogHeader>
 
-        <TransactionModalContent formId="add-transaction-modal" onSubmit={onSubmit}></TransactionModalContent>
+        <TransactionModalContent today={today} formId="add-transaction-modal" onSubmit={onSubmit}></TransactionModalContent>
 
         <DialogFooter>
           <Button variant={"outline"} type="button" onClick={() => setIsOpen(false)}>

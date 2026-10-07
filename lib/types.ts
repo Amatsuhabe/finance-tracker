@@ -4,7 +4,7 @@ type CategoryType = "income" | "expense" | "both"
 export interface Transaction {
   id: string;
   amount: number;
-  date: Date;
+  date: Date | string;
   description: string | null;
   type: TransactionType;
   category: Category;

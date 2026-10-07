@@ -2,6 +2,7 @@ import { Transaction } from "@/lib/types";
 import { cn, hexToRgba } from "@/lib/utils";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { Badge } from "../ui/badge";
+import { formatStoredDate } from "@/lib/date-time";
 
 interface TransactionItemContentProps extends React.HTMLAttributes<HTMLDivElement> {
   transaction: Transaction;
@@ -26,13 +27,7 @@ export default function TransactionItemContent({ transaction, className, ...prop
         </div>
 
         <div className="text-muted-foreground text-xs">
-          {
-            new Date(transaction.date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric"
-            })
-          }
+          {formatStoredDate(transaction.date)}
         </div>
       </div>
 

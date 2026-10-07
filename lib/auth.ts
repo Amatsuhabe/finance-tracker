@@ -22,6 +22,12 @@ export const auth = betterAuth({
         defaultValue: "",
         input: true,
       },
+      timezone: {
+        type: "string",
+        required: true,
+        defaultValue: "UTC",
+        input: true,
+      }
     }
   },
   hooks: {

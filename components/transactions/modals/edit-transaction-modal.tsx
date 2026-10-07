@@ -12,8 +12,9 @@ import { mutate } from "swr"
 import TransactionModalContent, { useTransactionModalStore } from "./transaction-modal-content"
 import { Button } from "../../ui/button"
 import { isEqual } from "lodash"
+import { dateKeyToLocalDate, formatDateKey, getDateKey } from "@/lib/date-time"
 
-export default function EditTransactionModal() {
+export default function EditTransactionModal({ today }: { today: string }) {
   const isOpen = useTransactionModalStore((state) => state.isEditOpen)
   const setIsOpen = useTransactionModalStore((state) => state.setIsEditOpen)
 
@@ -24,7 +25,7 @@ export default function EditTransactionModal() {
   const defaultValues: TransactionData = {
     amount: transaction.amount,
     type: transaction.type == "income" ? transaction.type : "expense",
-    date: new Date(transaction.date),
+    date: dateKeyToLocalDate(getDateKey(transaction.date)),
     description: transaction.description || "",
     categoryId: transaction.category.id,
   }
@@ -40,7 +41,7 @@ export default function EditTransactionModal() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ ...data, date: formatDateKey(data.date) })
     })
       .then(async (res) => {
         const body = await res.json()
@@ -77,7 +78,7 @@ export default function EditTransactionModal() {
           Edit Transaction
         </DialogHeader>
 
-        <TransactionModalContent formId="edit-transaction-modal" defaultValues={defaultValues} onSubmit={onSubmit} />
+        <TransactionModalContent today={today} formId="edit-transaction-modal" defaultValues={defaultValues} onSubmit={onSubmit} />
 
         <DialogFooter>
           <Button variant={"outline"} type="button" onClick={() => setIsOpen(false)}>
